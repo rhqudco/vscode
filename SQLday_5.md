@@ -139,3 +139,191 @@ select hour(curtime()),
 - 파일 용량이 현재 설정된 크기보다 큰 경우 데이터 저장 안 됨
   - my.ini파일에서 파일 최대 크기 변수 변경
   - 파일 업로드 / 다운로드 하는 폴더 경로를 별도로 허용하는 내용 추가(동영상 파일이 저장된 경로로 지정.. 하려 했지만 맥은 자동 null값이 들어가는 듯 싶다.)
+
+## DDL(Data Control Language)
+- 계정 관리
+- 데이터의 사용 권한 관리
+- 데이터베이스 트랜잭션 명시 (COMMIT / REVOKE)
+- COMMIT : 작업 완료
+- REVOKE : 작업 취소
+- 트랜잭션 처리 중 오류 발생
+  - REVOKE 작업 하여 처리하기 이전으로 되돌림.
+- GRANT : 데이터베이스 객체 권한 부여
+- REVOKE : 이미 부여된 데이터베이스 객체의 권한 취소
+
+### 권한(Privilege)
+- 특정 유형의 SQL문을 실행하거나 다른 사용자의 객체를 사용할 수 있는 권리
+- 권한의 종류
+  - 시스템 권한
+  - 객체 권한 : 특정 객체를 조작할 수 있는 권한
+    - DML 사용 권한 : SELECT / INSERT / DELETE / UPDATE
+
+- 계정 & 권한 사용 방법
+
+~~~sql
+-- DCL
+use sqldb3;
+
+-- 사용자 계정 조회하려면 해당 테이블 사용해야 함.
+use mysql;
+
+-- 사용자 계정 조회
+select * from user;
+
+-- 사용자 계정 생성
+-- create user 계정@호스트 identified by 비밀번호
+/*
+호스트
+- localhost : 로컬에서 접근 가능
+- 192.168.@@@.@@@ : 특정 ip에서 접근 가능
+- '%' : 어디에서나 접근 가능
+비밀번호 변경
+- SET PASSWORD for '계정명'@호스트 = '새 비밀번호';
+계정 삭제
+- DROP USER 계정@호스트;
+*/
+
+-- 계정생성
+create user newuser1@'%' identified by '1111';
+-- 스키마 접근 불가
+
+-- 비밀번호 변경
+set password for 'newuser1'@'%' = '1234';
+-- 서버 연결 (newuser1)
+
+-- 계정 삭제
+drop user newuser1@'%';
+
+
+-- 권한 조회 : SHOW GRANTS FOR 사용자계정;
+show grants for root;
+
+-- 권한 부여 : GRANT 권한 ON 데이터베이스.테이블 TO 계정@호스트;
+-- 모든 권한 부여 : GRANT ALL PRIVILEGES ON *.* TO 계정@호스트; (*은 '모두'라는 뜻)
+-- 특정 DB의 모든 테이블에 특정 권한 부여 : GRANT select, insert, update, delete ON DB명.* TO 계정@호스트;
+
+-- 특정 DB의 모든 테이블에 대한 권한 삭제 : REVOKE ALL PRIVILEGES ON DB.* FROM TO 계정@호스트;
+
+-- 특정 DB의 모든 테이블에 대해 특정 권한 삭제 : REVOKE select, insert, update, delete ON DB명.* FROM 계정@호스트;
+
+
+-- 계정 생성
+create user newuser1@'%' identified by '1111';
+-- 권한 조회
+show grants for newuser1;
+-- 서버 접속은 가능하지만 아무런 스키마가 보이지 않는다(스키마 사용 권한 없음)
+
+-- 모든 권한 부여
+grant all privileges on *.* to newuser1@'%';
+-- 모든 스키마 / 테이블 접근 가능
+
+-- user1 select 권한 삭제
+revoke select on *.* from newuser1@'%';
+-- table could not fetched
+
+-- sqldb3의 모든 테이블에 select권한 부여
+grant select on sqldb3.* to newuser1@'%';
+-- 다른 테이블은 could not fetched
+~~~
+
+## 백업 및 복구
+- 데이터베이스를 주기적으로 백업해 두거나 다른 서버로 이관할 때 사용
+- 백업 : Export
+- 복구 : Import
+- Server - Data Export or Data Import
+
+## JAVA와 DB연동
+- JDBC(Java Database Connectivity)
+  - 다양한 종류의 관계형 데이터베이스를 자바와 연동시켜 사용할 수 있게 도와주는 API
+  - 모든 DBMS에서 공통적으로 사용할 수 있는 인터페이스와 클래스로 구성됐다
+  - 실제 구현 클래스는 각 DBMS 벤더가 구현했기 때문에 모든 벤더가 JDBC드라이버를 제공
+    - 각 DBMS에 맞는 JDBC드라이버 사용
+  - JDBC 드라이버
+    - JDBC 인터페이스를 구현한 클래스 파일 모음(.jar파일)
+    - 각 DBMS 벤더에서 제공되는 구현 클래스
+  - 응용프로그램과 DBMS 사이에서 연결 역학
+  - SQL문을 DBMS에 전달하고 그 결과값을 응용프로그램에 전달하는 역할
+  - 장점
+    - 사용하는 RDBMS에 독리적인 프로그래밍 가능
+    - 쉽게 RDBMS 교체 가능
+    - 자바는 단순히 문자열로 쿼리를 전송하고 해석은 각 벤더가 구현한 드라이버에서 담당
+    - 표준 SQL뿐 아니라 각 JDBC Driver를 제공하는 DBMS 벤더별로 최적의 성능 발휘
+    - 벤더 종속적인 SQL도 처리 가능
+
+## JDBC를 이용한 연결 과정
+1. 드라이버 로드
+2. Connection 객체 생성
+3. Statement 또는 PreparedStatement 생성
+4. 쿼리 수행 (sql 문 실행)
+5. SQL문에 결과 반환이 있는 경우 ResultSet 객체 생성 (결과 받아옴)
+6. 모든 객체 close() : 반환 순서
+  - ResultSet 
+  - Statement 
+  - Connection (접속 종료)
+
+#### 패키지 import
+- JDBC는 java.sql 패키지에 포함되어 있음
+- import java.sql.DriverManager;
+- import java.sql.Connection; ….
+- JDBC는 데이터베이스 접속하기 위해
+- 한 개의 클래스 java.sql.DriverManager와
+- 두 개의 인터페이스(java.sql.Driver 와 java.sql.Connection)를 사용
+
+##### 1 .JDBC 드라이버 로드
+- Java에서 MySQL Driver를 사용하기 위해 드라이버를 JVM에 로딩하는 과정
+- Class.forName(“com.mysql.cj.jdbc.Driver”);
+
+##### 2. Connection 객체 생성
+- DriverManager 클래스의 static 메서드 인 
+- getConnection() 메서드를 이용해서 
+- Connection 객체를 얻어옴
+- MySQL 서버 실제 연결
+- Connection 객체가 생성되면 DBMS 접속 성공
+
+~~~java
+DriverManager.getConnection(String url,
+						  String user,
+						  String password)
+~~~
+
+- jdbcLmysql : JDBC 드라이버
+ - jdbc : JDBC URL의 프로토콜 이름
+ - mysql : MySQL JDBC 드라이버
+- localhost : MySQL이 설치된 IP (호스트 이름)
+ - localhost 또는 127.0.0.1 : 내 컴퓨터
+ - 192.168.172.1 : 서버 IP (현재 내 컴퓨터의 Workbench에서 서버 접속해서 사용)
+- 3306 : MySQL 접속 포트
+- sqldb6 : 사용하는 데이터 베이스 이름
+- serverTimezone=UTC
+
+
+##### 3. Statement 객체 생성
+- 쿼리문 전송을 위한 Statement 객체 생성
+- 또는 PreparedStatement
+- Connection 인터페이스의 createStatement() 메서드를 사용해서 객체 생성
+- PreparedStatement pstmt = con.preparedStatement(sql);
+- PreparedStatement 객체를 통해 SQL 전송 가능
+
+##### 4. 쿼리 수행
+- SQL 전송에 사용되는 메소드
+  - executeQuery() / executeUpadte()
+    - 두 가지로 구분하는 이유 : sql문 실행 결과가 다르기 때문
+  - executeUpdate()
+    - 쿼리문이 insert / update / delete 구문인 경우 사용
+    - 영향을 받은 행의 수 반환
+    - insert 후 반환된 결과값이 0인 경우 insert 되지 않았음
+  - executeQuery()
+    - select 구문의 경우
+    - ResultSet 객체로 반환 (select 문 결과에 해당되는 여러 행 반환)
+    - ResultSet에서 데이터 추출
+    - next() 메소드 이용해서 논리적 커서를 이동하며 각 열의 데이터를 바인딩
+    - rs.next() 호출 결과 true이면 반복해서 다음 행 데이터 가져옴(반복문 사용)
+      - cursor : 다음 열로 이동
+      - next() : 다음 행으로 이동
+      - 정수 : getInt("bookPrice)
+      - 문자 : getString("bookName")
+
+##### 5. 모든 객체 자원반납 : close()
+- ResultSet
+- Statement
+- Connection(접속 종료)
