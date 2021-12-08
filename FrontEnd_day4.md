@@ -417,7 +417,7 @@
 </html>
 ~~~
 
-# FrontEnd_day3 정리 (2021.12.06 월요일)
+# FrontEnd_day4 정리 (2021.12.07 화요일)
 
 ## JavaScript
 - 정식명칭 : ECMA스크립트(ECMAScript)
@@ -835,6 +835,7 @@ alert("a.js에 삽입된 알림창");
   - parseInt() : 정수값으로 형변환
   - parseFloat() : 실수값으로 형변환
   - String() / toString() : 문자열로 형변환
+  - .toLocaleString() : 천단위 구분
 
 ##### 데이터 타입, 형변환 예제 : dataType.html
 
