@@ -577,7 +577,8 @@
             }
             function show() {
                 for (var i = 0; i < num; i++) {
-                    document.write("★")
+                    // document.write("★"); // 버튼 사라짐
+                    document.body.innerHTML += "★"; // 버튼 유지
                 }
             }
         </script>

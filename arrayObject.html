@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+        <script type="text/javascript">
+            var fruits = new Array("사과", "복숭아", "포도");
+
+            document.write("모든 요소 출력<br>");
+            for(var i = 0; i < fruits.length; i++) {
+                document.write(fruits[i] + " ");
+            }
+            document.write("<hr>");
+            fruits.shift(); // 첫 번째 요소 제거
+            document.write("shift 후 요소 출력<br>");
+            for(var i = 0; i < fruits.length; i++) {
+                document.write(fruits[i] + " ");
+            }
+            document.write("<hr>");
+            fruits.unshift("배"); // 첫 번째 요소에 추가
+            document.write("unshift 후 요소 출력<br>");
+            for(var i = 0; i < fruits.length; i++) {
+                document.write(fruits[i] + " ");
+            }
+            document.write("<hr>");
+            fruits.pop(); // 마지막 요소 제거
+            document.write("pop 후 요소 출력<br>");
+            for(var i = 0; i < fruits.length; i++) {
+                document.write(fruits[i] + " ");
+            }
+            document.write("<hr>");
+            fruits.push("딸기"); // 마지막에 요소 추가
+            fruits.push("수박");
+            document.write("push 후 요소 출력<br>");
+            for(var i = 0; i < fruits.length; i++) {
+                document.write(fruits[i] + " ");
+            }
+            document.write("<hr>");
+            fruits.reverse(); // 역순으로 변경
+            document.write("reverse 후 요소 출력<br>");
+            for(var i = 0; i < fruits.length; i++) {
+                document.write(fruits[i] + " ");
+            }
+            document.write("<hr>");
+            fruits.sort(); // 오름차순 정렬
+            document.write("sort 후 요소 출력<br>");
+            for(var i = 0; i < fruits.length; i++) {
+                document.write(fruits[i] + " ");
+            }
+            document.write("<hr>");
+            fruits.splice(2, 1, "망고", "오렌지"); // splice 작업 2번 인덱스부터 1개를 삭제하고 망고, 오렌지 추가
+            document.write("splice 후 요소 출력<br>");
+            for(var i = 0; i < fruits.length; i++) {
+                document.write(fruits[i] + " ");
+            }
+            document.write("<hr>");
+            var newFruits = fruits.slice(1, 4); // slice 작업 1번 인덱스부터 4-1번 인덱스까지 데이터를 잘라서 새 배열 생성
+            document.write("slice 후 요소 출력 (newFruits)<br>");
+            for(var i = 0; i < newFruits.length; i++) {
+                document.write(newFruits[i] + " ");
+            }
+            document.write("<br>slice 후 요소 출력 (fruits)<br>");
+            for(var i = 0; i < fruits.length; i++) {
+                document.write(fruits[i] + " ");
+            }
+        </script>
+</head>
+<body>
+    
+</body>
+</html>
