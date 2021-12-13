@@ -777,3 +777,11 @@ removeEventListener();
     - var name = document.getElementById(‘name’);
     - name.focus();
     - name.value = "";
+
+##### 폼 유효성 확인 예제 - 입력 값 확인 join.html, checkForm.js
+- \<input>성명을 입력하지 않은 경우
+- \<input>id를 입력하지 않은 경우 혹은 길이가 6 ~ 10자가 아닌 경우
+- \<input>비밀번호와 비밀번호 확인의 값이 같지 않은 경우
+- \<select> 태그에서 선택하지 않은 경우
+- 라디오 버튼 하나도 체크하지 않은 경우
+- 체크박스에서 하나도 선택하지 않은 경우
