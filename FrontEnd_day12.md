@@ -334,6 +334,11 @@ export default Content;
     - background-color => backgroundColor
 - class 대신 className 사용
 - 태그는 반드시 닫아야 함 : \<br />, \<p />
+- JSX 내에 자바스크립트 if문 사용
+  - 변수처럼 { } 안에 함수 작성
+- JSX 함수 정의, 함수 사용
+  - render() 영역에 함수 작성
+  - JSX 내부에서는 변수처럼 {  } 안에 함수명 작성
 
 ~~~js
 import React, { Component } from 'react';
@@ -421,6 +426,101 @@ class JSX extends Component {
         );
     }
 }
-
 export default JSX;
+~~~
+
+## props
+- 컴포넌트의 속성(값 설정)
+- 부모 컴포넌트에서 자식 컴포넌트로 값 정달할 때 사용(읽기 전용)
+- 컴포넌트 렌더링 할 때 값을 전달해 주고 싶을 때 사용
+- 부모 컴포넌트 : App.js
+  - \<Subject title="제목" sub="부제목">\</Subject>
+- 자식 컴포넌트 : Subject.js
+  - {this.props.title}을 원하는 곳에 적으면 부모 컴포넌트 title에 있는 값이 출력 됨
+
+~~~js
+class App extends Component {
+  render() {
+    return (
+      <div>
+        {/* <h3>안녕하세요.</h3> */}
+        {/* 위에 추가한 컴포넌트 사용 : 태그 형식으로 사용한다. */}
+        {/* <Subject></Subject>
+        <NAV></NAV>
+        <Content></Content> */}
+        <JSX></JSX>
+        <Subject title="제목" sub="부제목"></Subject>
+      </div>
+    )
+  }
+}
+~~~
+
+~~~js
+class Subject extends Component {
+    render() {
+      return (
+        <header>
+          <h1>{this.props.title}</h1>
+          {this.props.sub} <br />
+          world wide Web!
+        </header>
+      )
+    }
+}
+~~~
+
+### 디폴트 props
+- 기본 값으로 디폴트 props 설정 : 자식 컴포넌트에 설정
+- 방법1 : 상단에 static으로 설정 (더 최신 방법)
+- 방법2 : 하단에 클래스.defaultProps = { } 설정
+- 주의 ! 2개 다 설정한 경우 나중에(아래) 설정한 것만 적용됨
+
+~~~js
+class Subject extends Component {
+  // 디폴트 props 설정
+  static defaultProps = {
+    date:'2021-12-17'
+  }
+    render() {
+      return (
+        <header>
+          <h1>{this.props.title}</h1>
+          {this.props.sub} <br />
+          {this.props.date} <br /> {/* 밑에 디폴트 props를 설정했기 때문에 출력되지 않음. */}
+          {this.props.year} <br />
+        </header>
+      )
+    }
+}
+// 방법 2 : 디폴트 props 설정
+Subject.defaultProps = {
+  year:2021
+}
+export default Subject;
+~~~
+
+### 연습문제 - App.js, Student.js
+
+~~~js
+<Student name="홍길동" age="20" address="서울"></Student>
+~~~
+
+~~~js
+class Student extends Component {
+    static defaultProps = {
+        year:4
+      }
+    render() {
+        
+        return (
+            <div>
+                {this.props.name} <br />
+                {this.props.age} <br />
+                {this.props.address} <br />
+                {this.props.year} <br />
+            </div>
+        );
+    }
+}
 ~~~
