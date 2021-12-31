@@ -34,8 +34,8 @@
   - 지시어 \<%@ %> : JSP 페이지의 속성 지정
   - 선언부 \<%! %> : 변수 선언 및 메소드 정의
   - 표편식 \<%= %> : 계산식, 함수 호출 결과 등 출력
-  - 스크립트릿 <% %> : 자바 코드 기술
-  - 주석 <%-- --%> : JSP 페이지에 설명 추가
+  - 스크립트릿 \<% %> : 자바 코드 기술
+  - 주석 \<%-- --%> : JSP 페이지에 설명 추가
   - 액션 태그 \<jsp:액션></jsp:액션> : 자바 빈, include / forward / param 등
 
 ### JSP 페이지의 기본 구성 요소
@@ -72,7 +72,7 @@
     - language="java"
     - contentType="text/html; charset=UTF-8"
     - pageEncoding="UTF-8"
-  - __include 지시어 : <%@ include %>__
+  - __include 지시어 : \<%@ include %>__
     - <%@ include file="포함될 파일의 url" %>
     - 포함시킬 파일명을 file 속성의 값으로 기술
     - (공통적으로)포함될 내용을 가진 파일을 해당 JSP 페이지 내에 삽입하는 기능 제공
@@ -80,7 +80,7 @@
       - 한 JSP 페이지에서 다른 JSP 페이지를 포함하거나
       - 포함된 JSP 페이지가 또 다른 JSP 페이지에 중첩 포함 가능
     - 두 개의 파일이 하나의 파일로 합쳐진 후 하나의 파일로서 변환되고 컴파일
-  - __taglib 지시어 : <%@ taglib %>__
+  - __taglib 지시어 : \<%@ taglib %>__
     - \<%@ taglib prefix="c" url="......" %>
     - 커스텀 태그를 JSP 페이지 내에 사용할 때 이용
 
@@ -586,6 +586,320 @@
         }
         out.print("</table>");
     %>
+  </body>
+</html>
+~~~
+
+## 액션 태그
+- JSP 페이지 내에서 어떤 동작을 지시하는 태그
+- 기능 
+  - 어떤 동작 또는 액션이 일어나는 시점에 페이지와 페이지 사이에서의 제어 이동
+  - 다른 페이지의 실행 결과를 현재 페이지에 포함
+- 종류
+  - include
+  - forward
+  - useBean
+  - setProperty
+  - getProperty
+
+### include 액션태그 : \<jsp:include>
+- 다른 페이지의 실행 결과를 현재 페이지에 포함시킬 때 사용
+- 페이지를 모듈화 할 때 사용
+- \<jsp:include page="포함될 페이지" flush="ture" />
+  - page 속성 : 결과가 포함될 페이지명
+  - flust 속성 : 포함될 페이지로 이동될 때 현재 포함하는 페이지가 지금까지 출력 버퍼에 저장한 결과를 처리하는 방법을 결정
+    - true : 현재 페이지가 지금까지 버퍼에 저장한 내용 웹 브라우저에 출력하고 버퍼를 비움
+- include 액션태그와 include 지시어의 차이
+  - 형식
+    - 액션태그 : \<jsp:include page="포함될 페이지" />
+    - 지시어 : \<%@ include file="포함될 페이지" %>
+  - 처리 시점
+    - 액션태그 : 실행 시
+    - 지시어 : 자바 소스로 변환 시
+  - 기능
+    - 액션태그 : 별도의 파일로 처리, 제어권이 이동했다가 다시 돌아옴
+    - 지시어 : 현재 파일에 삽ㅇ비(합쳐서 하나의 java 파일 생성)
+  - 데이터 구성
+    - 액션태그 : 동적 데이터로 구성
+    - 지시어 : 정적 데이터로 구성
+  - 용도
+    - 액션태그 : 화면 레이아웃 모듈화 할 때
+    - 지시어 : 여러 페이지에서 사용하는 변수를 지정하고 include 시킴
+
+## 사진
+
+#### include 액션 태그 예제 - includeAction1.jsp, includeAction2.jsp
+
+~~~jsp
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+    <head>
+        <title>includeAction1</title>
+    </head>
+    <body>
+        <h3>includeAction1.jsp 입니다</h3>
+        <hr>
+        <jsp:include page="includeAction2.jsp" flush="true"/>
+    </body>
+</html>
+~~~
+
+~~~jsp
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+  <head>
+      <title>includeAction2</title>
+  </head>
+  <body>
+    <h3>includeAction2.jsp 입니다</h3>
+  </body>
+</html>
+~~~
+
+### forward 액션 태그 : \<jsp:forward>
+- 현재 페이지에서 다른 특정 페이지로 전환
+- 웹 페이지 간의 제어를 이동시킬 때 사용
+- \<jsp:forward page=”포워딩할 JSP 페이지”>
+
+#### forward 액션 태그 예제 - login.jsp, loginResult.jsp
+
+~~~jsp
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+    <head>
+        <title>login</title>
+    </head>
+    <body>
+<%--        <%--%>
+<%--            String user_id = request.getParameter("user_id");--%>
+<%--            // 값이 null인경우 출력은 되지만 null로 무언가 하려고 하면 NullPointerException 출력--%>
+<%--        %>--%>
+<%--        <%= user_id %>--%>
+        <%
+            String user_id = request.getParameter("user_id");
+            if(user_id == null) {
+        %>
+        <h2 name="h2login">로그인</h2>
+        <%
+            } else {
+        %>
+        <h2>아이디를 입력하지 않았습니다. 아이디를 입력해 주세요.</h2>
+        <%
+            }
+        %>
+        <form name="frmLogin" method="post" action="loginResult.jsp" >
+        아이디  :<input type="text" name="user_id"><br>
+        비밀번호:<input type="password" name="user_pw" ><br>
+        <input type="submit" value="로그인">  <input type="reset" value="다시입력">
+        </form>
+    </body>
+</html>
+~~~
+
+~~~jsp
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+    <head>
+        <title>Title</title>
+    </head>
+    <body>
+        <%
+            request.setCharacterEncoding("utf-8");
+            // 아이디를 입력하지 않았으면 login.jsp 페이지로 포워딩
+            String user_id = request.getParameter("user_id");
+            if(user_id.length() == 0) {
+        %>
+        <jsp:forward page="login.jsp"/>
+        <%
+            }
+        %>
+    <h2>환영합니다 <%= user_id%> 님!</h2>
+    </body>
+</html>
+
+~~~
+
+
+### param 액션 태그 : \<jsp:param>
+- 이동하는 페이지에 파라미터 값을 전달할 때 사용
+- forward  및 include 액션 태그에서 데이터를 전달하기 위해 사용
+- name과 value로 구성
+  - \<jsp:param name="id" value="abcd" />
+  - 받을 때
+    - request.getParameter("id");
+
+#### forward 액션 태그 예제 - paramLogin.jsp, paramLoginResult.jsp
+
+~~~jsp
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+    <head>
+        <title>paramLogin</title>
+    </head>
+    <body>
+        <%
+            request.setCharacterEncoding("utf-8");
+            String msg = request.getParameter("msg");
+            if(msg == null) {
+        %>
+            <h3>로그인</h3>
+        <%
+            } else {
+        %>
+            <h3><%= msg %></h3>
+        <%
+            }
+        %>
+        <form name="frmLogin" method="post" action="paramLoginResult.jsp" >
+            아이디  :<input type="text" name="user_id"><br>
+            비밀번호:<input type="password" name="user_pw" ><br>
+            <input type="submit" value="로그인">  <input type="reset" value="다시입력">
+        </form>
+    </body>
+</html>
+~~~
+
+~~~jsp
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+  <head>
+      <title>paramLoginResult</title>
+  </head>
+  <body>
+    <%
+        request.setCharacterEncoding("utf-8");
+        String msg = "아이디를 입력하지 않았습니다. 아이디를 입력해 주세요.";
+        String user_id = request.getParameter("user_id");
+        //  user_id 값이 비었으면 paramLogin.jsp로 포워딩 (msg 전송)
+        if(user_id.length() == 0) {
+    %>
+    <jsp:forward page="paramLogin.jsp">
+        <jsp:param name="msg" value="<%= msg %>"/>
+    </jsp:forward>
+    <%
+        }
+    %>
+
+    <h3>환영합니다. <%= user_id %> 님!</h3>
+  </body>
+</html>
+~~~
+
+## 자바 빈 관련 액션 태그
+
+### useBean 액션 태그 : \<jsp:useBean>
+- 자바 빈(JavaBeans)
+  - DTO / VO와 같은 개념
+  - 데이터를 다루기 위해 자바로 작성되는 소프트웨어 컴포넌트로 재사용 가능
+  - 입력 폼의 데이터와 데이터베이스의 데이터 처리 부분에서 활용
+  - 클래스로 만들어짐
+    - 멤버 필드(변수)로 속성(Property)이 있고
+    - 멤버 메소드로 Getter / Setter 메소드 포함
+    - setXXX() : 프로퍼티에 값 저장
+    - getXXX() : 프로퍼티 값 반환
+  - 속성 접근 제이자는 private
+  - Getter / Setter 메소드와 클래스는 public
+- 자바 빈을 JSP 페이지에서 사용할 때 사용
+- \<jsp:useBean id="빈 이름" class="클래스" scope="유효범위" />
+  - \<jsp:useBean id="student" class="sec01.StudentBean" scope="page" />
+  - id : 자바빈 이름
+  - class : 패키지명을 포함한 클래스 이름
+  - scope : 자바빈의 유효 범위
+    - page : 생성된 페이지 내에서만 사용 가능. (디폴트)
+    - request : 요청이 수행되는 페이지에서만 사용 가능
+    - session : 객체가 생성된 세션에서 수행되는 페이지에서 사용 웹 브라우저의 생명주기와 동일하게 사용 가능
+    - application : 객체가 생성된 애플리케이션에 포함된 페이지에서 사용 웹 애플리케이션 생명주기와 동일하게 사용 가능
+
+### setProperty 액션 태그 : \<jsp:setProperty>
+- 프로퍼티(변수) 값을 세팅할 때 사용 (setter)
+- 데이터 저장
+- \<jsp:setProperty name=”빈 이름” property=”속성이름” value=”속성값” />
+  - \<jsp:setProperty name=”student” property=stdNo value=2021001 />
+
+### getProperty 액션 태그 : \<jsp:getProperty>
+- 프로퍼티(변수) 값을 얻어올 때 사용 (getter)
+- \<jsp:getProperty name=”빈 이름” property=”속성이름”>
+  - <jsp:getProperty name=”student” property=”stdNo”>
+
+#### 자바 빈 액션 태그 예제 - StudentBean.java, studentBean.jsp
+- 빈 클래스 : StudentBean.java  (DTO/VO와 동일)
+  - Getters / Setters
+- studentBean.jsp
+  - useBean 액션 태그
+  - setProperty 액션 태그
+  - getProperty 액션 태그
+
+~~~java
+package main;
+
+public class StudentBean {
+    private String stdNo;
+    private String stdName;
+    private String stdPhone;
+    private String stdAddress;
+    private String stdYear;
+
+    public String getStdNo() { 
+        return stdNo; 
+    }
+    public void setStdNo(String stdNo) {
+        this.stdNo = stdNo;
+    }
+    public String getStdName() {
+        return stdName;
+    }
+    public void setStdName(String stdName) {
+        this.stdName = stdName;
+    }
+    public String getStdPhone() {
+        return stdPhone;
+    }
+    public void setStdPhone(String stdPhone) {
+        this.stdPhone = stdPhone;
+    }
+    public String getStdAddress() {
+        return stdAddress;
+    }
+    public void setStdAddress(String stdAddress) { 
+        this.stdAddress = stdAddress; 
+        }
+    public String getStdYear() {
+        return stdYear;
+    }
+    public void setStdYear(String stdYear) {
+        this.stdYear = stdYear;
+    }
+}
+~~~
+
+~~~jsp
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<jsp:useBean id="student" class="main.StudentBean" scope="page"></jsp:useBean>
+<html>
+  <head>
+      <title>자바 빈 액션 태그</title>
+  </head>
+  <body>
+    <h3>빈 속성 값 설정(setProperty)</h3>
+    <jsp:setProperty name="student" property="stdNo" value="2021001" />
+    <jsp:setProperty name="student" property="stdName" value="홍길동" />
+    <jsp:setProperty name="student" property="stdPhone" value="010-1111-1111" />
+    <jsp:setProperty name="student" property="stdAddress" value="서울시 종로구" />
+    <jsp:setProperty name="student" property="stdYear" value="4" />
+
+    <h3>빈 속성 값 출력(getProperty)</h3>
+    학번 : <jsp:getProperty name="student" property="stdNo"/> <br>
+    이름 : <jsp:getProperty name="student" property="stdName"/> <br>
+    연락처 : <jsp:getProperty name="student" property="stdPhone"/> <br>
+    주소 : <jsp:getProperty name="student" property="stdAddress"/> <br>
+    학년 : <jsp:getProperty name="student" property="stdYear"/>
+
+    <h3>빈 속성 값 출력(Getter 사용)</h3>
+    학번 : <%= student.getStdNo() %> <br>
+    이름 : <%= student.getStdName() %> <br>
+    연락처 : <%= student.getStdPhone() %> <br>
+    주소 : <%= student.getStdAddress() %> <br>
+    학년 : <%= student.getStdYear() %> <br>
   </body>
 </html>
 ~~~
