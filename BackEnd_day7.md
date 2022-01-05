@@ -650,7 +650,15 @@ public class MemberMain {
 
 ### 스프링에서 AOP 구현 방식
 - XML을 이용한 AOP 구현
+  - 라이브러리 의존성 \<dependency> 추가 : pom.xml
+  - 공통 기능의 클래스 생성 - Advice 역할 클래스
 - 어노테이션을 이용한 AOP 구현
+  - @Aspect
+    - @Aspect 어노테이션을 이용한 AOP 구현 작업
+      - 라이브러리 의존성 추가 : pom.xml \<aop:aspectj-autoproxy />
+  - @Pointcut
+  - @Around / @Before / @After / @AfterReturning / @AfterThrowing
+
 
 #### XML을 이용한 AOP 구현 예제 - pom.xml, application-config.xml, Gugudan.java, Rect.java, PerformanceAspect.java, MainClass.java
 
