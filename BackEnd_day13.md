@@ -1,91 +1,244 @@
-## @Controller vs @RestController
-- @Controller : 결과를 뷰 페이지(.jsp) 이름 반환
-- @RestController : 별도의 뷰를 제공하지 않은 채 데이터 반환
-  - 클래스에 붙임
-  - @ResponseBody와 기능 동일 (메소드에서 처리)
+# 로그인 기능
 
-#### @RestController 예제
+## 페이지 구성
 
-- productSearchForm3.jsp와 productSearchForm3.js는 1과 같다.(선택자 이름, js에서 url 이름만 바꿈)
+### top.jsp
 
-~~~java
-// ProductController3.java
-    // 상품 검색 폼3 이동
-    @RequestMapping("/product/productSearchForm3")
-    public String productSearchForm3() {
-        return "product/productSearchForm3";
-    }
-}
+~~~jsp
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+    <head>
+        <title>Top</title>
+        <link rel="stylesheet" href="/css/common.css" type="text/css">
+        <link rel="stylesheet" href="/css/index.css" type="text/css">
+        <link rel="stylesheet" href="/css/menu.css" type="text/css">
+        <link rel="stylesheet" href="/css/slideShow.css" type="text/css">
+        <link rel="stylesheet" href="/css/tabMenu.css" type="text/css">
+        <link rel="stylesheet" href="/css/product.css" type="text/css">
+        <script src="/js/jquery-3.6.0.min.js"></script>
+        <script src="/js/subMenu.js"></script>
+        <script src="/js/slideShow.js"></script>
+        <script src="/js/tabMenu.js"></script>
+        <script src="/js/index.js"></script>
+    </head>
+    <body>
+    <div id="wrap">
+            <header>
+                <div id="headerBox">
+                    <div id="logoBox"><a href="index.html"><img src="/images/logo.png" id="logoImg"></a></div>
+                    <div id="topMenuBox">로그인 이벤트 장바구니 고객센터 회원가입</div>
+                </div>
+            </header>
+            <nav>
+                <div id="mainMenuBox">
+                    <ul id="menuItem">
+                        <li><a href="#">SPECIAL</a></li>
+                        <li><a href="#">메뉴 항목1</a></li>
+                        <li><a href="#">메뉴 항목2</a></li>
+                        <li><a href="#">메뉴 항목3</a></li>
+                        <li><a href="#">메뉴 항목4</a></li>
+                        <li><a href="#" id="showAllMenu">전체 보기</a></li>
+                    </ul>
+                </div>
+                <!-- mainMenuBox 끝 -->
+                <div id="subMenuBox">
+                    <div class="subMenuItem" id="subMenuItem1">
+                        <ul>
+                            <li><a href="#">subMenuItem 1-1</a></li>
+                            <li><a href="#">subMenuItem 1-2</a></li>
+                            <li><a href="#">subMenuItem 1-3</a></li>
+                            <li><a href="#">subMenuItem 1-4</a></li>
+                        </ul>
+                    </div>
+                    <div class="subMenuItem" id="subMenuItem2">
+                        <ul>
+                            <li><a href="#">subMenuItem 2-1</a></li>
+                            <li><a href="#">subMenuItem 2-2</a></li>
+                            <li><a href="#">subMenuItem 2-3</a></li>
+                            <li><a href="#">subMenuItem 2-4</a></li>
+                        </ul>
+                    </div>
+                    <div class="subMenuItem" id="subMenuItem3">
+                        <ul>
+                            <li><a href="#">subMenuItem 3-1</a></li>
+                            <li><a href="#">subMenuItem 3-2</a></li>
+                            <li><a href="#">subMenuItem 3-3</a></li>
+                            <li><a href="#">subMenuItem 3-4</a></li>
+                        </ul>
+                    </div>
+                    <div class="subMenuItem" id="subMenuItem4">
+                        <ul>
+                            <li><a href="#">subMenuItem 4-1</a></li>
+                            <li><a href="#">subMenuItem 4-2</a></li>
+                            <li><a href="#">subMenuItem 4-3</a></li>
+                            <li><a href="#">subMenuItem 4-4</a></li>
+                        </ul>
+                    </div>
+                    <div class="subMenuItem" id="subMenuItem5">
+                        <ul>
+                            <li><a href="#">subMenuItem 5-1</a></li>
+                            <li><a href="#">subMenuItem 5-2</a></li>
+                            <li><a href="#">subMenuItem 5-3</a></li>
+                            <li><a href="#">subMenuItem 5-4</a></li>
+                        </ul>
+                    </div>
+                    <div class="subMenuItem" id="subMenuItem6">
+                        <ul>
+                            <li><a href="#">subMenuItem 6-1</a></li>
+                            <li><a href="#">subMenuItem 6-2</a></li>
+                            <li><a href="#">subMenuItem 6-3</a></li>
+                            <li><a href="#">subMenuItem 6-4</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- subMenuBox 끝 -->
+            </nav>
+        </div>
+        </body>
+</html>
+
 ~~~
 
-~~~java
-// MVCRestController.java
+### index.jsp
 
-@RestController
-public class MVCRestController {
-    @Autowired
-    ProductService service;
+~~~jsp
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프로젝트 : index</title>
+    <link rel="stylesheet" href="/css/common.css" type="text/css">
+    <link rel="stylesheet" href="/css/index.css" type="text/css">
+    <link rel="stylesheet" href="/css/menu.css" type="text/css">
+    <link rel="stylesheet" href="/css/slideShow.css" type="text/css">
+    <link rel="stylesheet" href="/css/tabMenu.css" type="text/css">
+    <link rel="stylesheet" href="/css/product.css" type="text/css">
+    <script src="/js/jquery-3.6.0.min.js"></script>
+    <script src="/js/subMenu.js"></script>
+    <script src="/js/slideShow.js"></script>
+    <script src="/js/tabMenu.js"></script>
+    <script src="/js/index.js"></script>
+</head>
+<body>
+    <div id="wrap">
+<!--    TOP    -->
+        <jsp:include page="layout/top.jsp" flush="true" />
+        <section>
+            <article id="slideShow">
+                <!-- 이전, 다음 버튼 -->
+                <div id="prevNextButtonBox">
+                    <img src="/images/prevButton.png" id="prevButton">
+                    <img src="/images/nextButton.png" id="nextButton">
+                </div>
+                <div id="slideShowBox">
+                    <div id="slidePanel">
+                        <img src="/images/slide_img_01.jpg" class="slideImage">
+                        <img src="/images/slide_img_02.jpg" class="slideImage">
+                        <img src="/images/slide_img_03.jpg" class="slideImage">
+                        <img src="/images/slide_img_04.jpg" class="slideImage">
+                        <img src="/images/slide_img_05.jpg" class="slideImage">
+                    </div>
+                </div>
+                <!-- slideShowBox 끝 -->
+                <div id="controlPanel">
+                    <img src="/images/controlButton1.png" class="controlButton">
+                    <img src="/images/controlButton1.png" class="controlButton">
+                    <img src="/images/controlButton1.png" class="controlButton">
+                    <img src="/images/controlButton1.png" class="controlButton">
+                    <img src="/images/controlButton1.png" class="controlButton">
+                </div>
+            </article>
 
-    // 상품 검색3
-    @RequestMapping("/product/productSearch3")
-    public ArrayList<ProductVo> productSearch3 (@RequestParam HashMap<String, Object> param,
-                                              Model model){
-        System.out.println("RestController");
-        ArrayList<ProductVo> prdList = service.productSearch(param);
-        model.addAttribute("prdList", prdList);
-        return prdList;
-    }
-}
+            <article id="content1"> <!-- 텝 메뉴 -->
+                <div id="tabMenuBox">
+                    <div id="tabMenu">
+                        <ul id="tab">
+                            <li><img src="/images/tab1.png"></li>
+                            <li><img src="/images/tab2.png"></li>
+                            <li><img src="/images/tab3.png"></li>
+                            <li><img src="/images/tab4.png"></li>
+                        </ul>
+                    </div>
+                    <div id="tabContent">
+                        <div><a href="#"><img src="/images/tab_img_01.jpg"></a></div>
+                        <div><a href="#"><img src="/images/tab_img_02.jpg"></a></div>
+                        <div><a href="#"><img src="/images/tab_img_03.jpg"></a></div>
+                        <div><a href="#"><img src="/images/tab_img_04.jpg"></a></div>
+                    </div>
+                </div>
+            </article>
+
+            <article id="content2"> <!-- 베스트 상품 -->
+                <div id="productBox">
+                    <h3>베스트 상품</h3>
+                    <div class="product">
+                        <div><a href=""><img src="/images/prd01.jpg"></a></div>
+                        <div><a href=""><img src="/images/prd02.jpg"></a></div>
+                        <div><a href=""><img src="/images/prd03.jpg"></a></div>
+                    </div>
+                    <div class="product">
+                        <div><a href=""><img src="/images/prd04.jpg"></a></div>
+                        <div><a href=""><img src="/images/prd05.jpg"></a></div>
+                        <div><a href=""><img src="/images/prd06.jpg"></a></div>
+                    </div>
+                </div>
+            </article>
+        </section>
+<!--  BOTTOM  -->
+        <jsp:include page="layout/bottom.jsp" flush="true" />
+    </div>
+</body>
+</html>
 ~~~
 
-## 스프링 부트(Spring Boot)
-- 스프링 프레임워크를 사용하는 프로젝트를 아주 간편하게 설정할 수 있는 스프링 프레임워크의 서브 프로젝트
-  - 톰캣 설치 등 여러가지 복잡한 설정하지 않아도 된다.
-- 특징
-  - XML 기반 설정 과정 없이 간단히 프로젝트를 시작할 수 있음
-  - Maven의 pom.xml 파일에 의존성 라이브러리의 버전을 지정하지 않아도 된다.(스프링 부트가 권장 버전 관리)
-  - 단독 실행되는 스프링 애플리케이션 구현 가능
-  - 프로젝트 환경 구축에 필요한 서버 외적인 툴 내장되어 있어 별도 설치 필요 없음
+### bottom.jsp
 
-### 사용할 스프링 부트 프로젝트
-#### 정보
-- Maven
-- Java 11
-- 2.6.2
-- Group : com.multi
-- Artifact : boot001
-- name : boot001
-- Package Name : com.multi.boot001
-- Packaging : War
-- Dependency
-  - JDBC API
-  - MySQL Driver
-  - Spring Web
-
-#### application.properties
-
+~~~jsp
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+  <head>
+      <title>Bottom</title>
+      <link rel="stylesheet" href="/css/common.css" type="text/css">
+      <link rel="stylesheet" href="/css/index.css" type="text/css">
+      <link rel="stylesheet" href="/css/menu.css" type="text/css">
+      <link rel="stylesheet" href="/css/slideShow.css" type="text/css">
+      <link rel="stylesheet" href="/css/tabMenu.css" type="text/css">
+      <link rel="stylesheet" href="/css/product.css" type="text/css">
+      <script src="/js/jquery-3.6.0.min.js"></script>
+      <script src="/js/subMenu.js"></script>
+      <script src="/js/slideShow.js"></script>
+      <script src="/js/tabMenu.js"></script>
+      <script src="/js/index.js"></script>
+  </head>
+  <body>
+    <div id="wrap">
+        <footer>
+            <div id="footerBox">
+                <div id="bottomMenuBox">
+                    <ul id="bottomMenuItem">
+                        <li><a href="#">회사소개</a></li>
+                        <li><a href="#">이용약관</a></li>
+                        <li><a href="#">개인정보 처리방침</a></li>
+                        <li><a href="#">전자금융거래약관</a></li>
+                        <li><a href="#">보안센터</a></li>
+                        <li><a href="#">채용정보</a></li>
+                    </ul>
+                </div>
+                <div id="companuInfo"><img src="/images/footer.png"></div>
+                <div id="moveToTopBox"><img src="/images/moveToTop.png" id="moveToTop"></div>
+            </div>
+        </footer>
+    </div>
+  </body>
+</html>
 ~~~
-server.port=8080(tomcat 포트 번호)
-spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
-spring.datasource.url=주소(mysql 주소)
-spring.datasource.username=@@@
-spring.datasource.password=@@@
 
-spring.mvc.view.prefix=/WEB-INF/views/
-spring.mvc.view.suffix=.jsp
-~~~
-
-#### pom.xml
-- 아래의 내용 추가
-
-~~~xml
-<dependency>
-	<groupId>javax.servlet</groupId>
-	<artifactId>jstl</artifactId>
-</dependency>
-<dependency>
-	<groupId>org.apache.tomcat.embed</groupId>
-	<artifactId>tomcat-embed-jasper</artifactId>
-	<scope>provided</scope>
-</dependency>
-~~~
+## 서버 구성
+- MemberVO
+- IMemberService
+- MemberService
+- IMemberDAO
+- MemberController
+- MemberMapper.xml
